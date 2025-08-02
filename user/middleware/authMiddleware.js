@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
-const blacklisttokenModel = require('../models/blackListTokenModel');
+const blacklistTokenModel = require('../models/blackListTokenModel');
 
 
 let userAuth = async (req, res, next) => {
@@ -11,11 +11,11 @@ let userAuth = async (req, res, next) => {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
-        // const isBlacklisted = await blacklisttokenModel.find({ token });
+        const isBlacklisted = await blacklistTokenModel.find({ token });
 
-        // if (isBlacklisted.length) {
-        //     return res.status(401).json({ message: 'Unauthorized' });
-        // }
+        if (isBlacklisted.length) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -33,6 +33,9 @@ let userAuth = async (req, res, next) => {
     }
 }
 
+
+
+
 module.exports = {
-    userAuth
+    userAuth,
 }
