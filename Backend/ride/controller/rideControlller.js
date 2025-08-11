@@ -2,7 +2,8 @@ const rideModel = require("../models/rideModel");
 const {subscribeToQueue , publishToQueue} = require("../service/rabbit");
 
 let createRide = async(req, res) => {
-    const {pickup , destination} = req.body;
+    try{
+        const {pickup , destination} = req.body;
 
     const newRide = await rideModel.create({
         user: req.user._id,
@@ -13,6 +14,10 @@ let createRide = async(req, res) => {
     await newRide.save();
     publishToQueue("new-ride" , JSON.stringify(newRide));
     res.send(newRide);
+    }
+    catch(err) {
+        return res.status(500).json({ message: err.message });
+    }
 }
 
 let acceptride = async(req , res) => {

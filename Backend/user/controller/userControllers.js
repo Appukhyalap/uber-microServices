@@ -21,7 +21,7 @@ let register = async (req, res) => {
 
         const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
         res.cookie('token', token);
-
+        console.log("User registered successfully");
         return res.status(200).json({ token, newUser });
     }
     catch (err) {
@@ -46,7 +46,7 @@ let loginUser = async (req, res, next) => {
             return res.status(400).json({ message: 'Invalid email or password' });
         }
 
-        console.log("user logged")
+        console.log("user logged in")
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         delete user._doc.password;
@@ -64,12 +64,13 @@ let loginUser = async (req, res, next) => {
 
 let logout = async (req, res) => {
     try {
-        const token = req.cookies.token;
+        const token = req.cookies.token || (req.headers.authorization && req.headers.authorization.split(' ')[1]);
         if (!token) {
             return res.status(400).json({ message: "No token found in request" });
         }
         await blacklistTokenModel.create({ token });
         res.clearCookie('token');
+        console.log("User logged out successfully");
         res.send({ message: 'User logged out successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });

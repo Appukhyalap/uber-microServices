@@ -25,7 +25,7 @@ let captainRegister = async(req , res) => {
         res.cookie('token', token);
 
         delete newcaptain._doc.password;
-
+        console.log("Captain registered successfully");
         res.send({ token, newcaptain });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -76,7 +76,7 @@ let captainlogout = async (req, res) => {
         await blacklistTokenModel.create({ token });
 
         res.clearCookie('token');
-
+        console.log("Captain logged out successfully");
         res.send({ message: 'Captain logged out successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });

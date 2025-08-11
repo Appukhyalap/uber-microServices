@@ -18,7 +18,7 @@ let captainAuth = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const captain = await captainModel.findOne({_id: decoded.id});
+        const captain = await captainModel.findOne({ _id: decoded.id });
 
         if (!captain) {
             return res.status(401).json({ message: 'Unauthorized - user not found' });
